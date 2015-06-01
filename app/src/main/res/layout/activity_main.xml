@@ -1,0 +1,17 @@
+<!-- activity_screen_slide.xml -->
+<android.support.v4.view.ViewPager xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/pager"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_gravity="center">
+
+    <android.support.v4.view.PagerTitleStrip
+        android:id="@+id/pager_title_strip"
+        android:layout_width="match_parent"
+        android:layout_height="35dp"
+        android:layout_gravity="top"
+        android:background="#444"
+        android:paddingBottom="5dp"
+        style="@style/PagerTabStripText"/>
+
+</android.support.v4.view.ViewPager>
