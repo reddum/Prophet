@@ -22,6 +22,14 @@
             android:name=".ListDevicesActivity"
             android:label="@string/title_activity_list_devices" >
         </activity>
+        <activity
+            android:name=".NewsActivity"
+            android:label="@string/title_activity_news" >
+        </activity>
+        <activity
+            android:name=".RelatedNewsActivity"
+            android:label="@string/title_activity_related_news" >
+        </activity>
     </application>
 
 </manifest>

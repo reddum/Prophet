@@ -29,6 +29,7 @@ public class RecommendRequest {
     private static final String RECOMMEND_IF_API = "recommend_w_if/";
     private static final String HISTORY_API = "history/";
     private static final String USER_API = "users/";
+    private static final String RELATED_API = "itemsim/";
 
 
     public interface OnGetNewRecommendListener {
@@ -98,7 +99,7 @@ public class RecommendRequest {
                         Log.d(TAG, response.toString());
 
                         try {
-                            JSONArray recommends = response.getJSONArray("filtered_recommends");
+                            JSONArray recommends = response.getJSONArray("recommends");
 
                             List<JSONObject> recommendsList = new ArrayList<JSONObject>();
                             for (int i = 0; i < recommends.length(); i++)
@@ -201,6 +202,72 @@ public class RecommendRequest {
                                 list.add(historyList.get(i).getString("aid"));
                             }
                             l.onSuccess(list);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }, new Response.ErrorListener() {
+
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.e(TAG, error.getMessage(), error);
+                        l.onError();
+                    }
+                });
+
+        request.setShouldCache(false);
+        RequestQueueInstance.getInstance(context).addToRequestQueue(request);
+    }
+
+    public static void getRelatedList(Context context, String aid, final OnGetNewRecommendListener l) {
+        String url = HOST + RELATED_API + aid;
+        Log.d(TAG, url);
+
+        JsonObjectRequest request = new JsonObjectRequest
+                (Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+
+                    @Override
+                    public void onResponse(JSONObject response) {
+
+                        Log.d(TAG, response.toString());
+
+                        try {
+                            JSONArray news = response.getJSONArray("similars");
+
+                            List<JSONObject> newsList = new ArrayList<JSONObject>();
+                            for (int i = 0; i < news.length(); i++)
+                                newsList.add(news.getJSONObject(i));
+
+                            Collections.sort(newsList, new Comparator<JSONObject>() {
+                                @Override
+                                public int compare(JSONObject a, JSONObject b) {
+                                    String valA = new String();
+                                    String valB = new String();
+
+                                    try {
+                                        valA = (String) a.get("strength");
+                                        valB = (String) b.get("strength");
+                                    }
+                                    catch (JSONException e) {
+                                        Log.e(TAG, "JSONException in combineJSONArrays sort section", e);
+                                    }
+
+                                    int comp = valA.compareTo(valB);
+
+                                    if(comp > 0)
+                                        return 1;
+                                    if(comp < 0)
+                                        return -1;
+                                    return 0;
+                                }
+                            });
+
+                            List<String> list = new ArrayList<String>();
+                            for (int i=0; i < newsList.size(); i++) {
+                                list.add(newsList.get(i).getString("aid"));
+                            }
+                            l.onSuccess(list);
+
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }

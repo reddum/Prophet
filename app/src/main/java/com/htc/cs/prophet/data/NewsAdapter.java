@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.NetworkImageView;
+import com.htc.cs.prophet.NewsActivity;
 import com.htc.cs.prophet.R;
 import com.htc.cs.prophet.service.ArticleRequest;
 import com.htc.cs.prophet.service.RequestQueueInstance;
@@ -92,7 +93,10 @@ public class NewsAdapter extends BaseAdapter {
                     @Override
                     public void onClick(View v) {
                         try {
-                            Intent myIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(meta.getUrl()));
+                            Intent myIntent = new Intent(context, NewsActivity.class);
+                            myIntent.putExtra("url", meta.getUrl());
+                            myIntent.putExtra("title", meta.getTitle());
+                            myIntent.putExtra("aid", meta.getId());
                             context.startActivity(myIntent);
                         } catch (ActivityNotFoundException e) {
                             Log.e(TAG, e.getMessage(), e);

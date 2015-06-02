@@ -27,9 +27,11 @@ public class NewsFragment extends Fragment {
 
 
     public static final String NEWS_TYPE = "news_type";
+    public static final String AID = "aid";
     public static final String TYPE_HISTORY = "history";
     public static final String TYPE_CF = "cf";
     public static final String TYPE_IFCF = "ifcf";
+    public static final String TYPE_RELATED = "related";
 
     private ListView mNewsListView;
     private NewsAdapter adapter;
@@ -78,9 +80,24 @@ public class NewsFragment extends Fragment {
                 }
             });
 
-        } else {
+        } else if (type.equals(TYPE_IFCF)){
 
             RecommendRequest.getNewsRecommendations(context, Utils.getDeviceSN(context), 1, new OnGetNewRecommendListener() {
+                @Override
+                public void onSuccess(List<String> list) {
+                    adapter = new NewsAdapter(context, list);
+                    mNewsListView.setAdapter(adapter);
+                }
+
+                @Override
+                public void onError() {
+                    Log.e(TAG, "getNewsRecommendations error");
+                }
+            });
+        } else if (type.equals(TYPE_RELATED)){
+
+            String aid = getArguments().getString(AID);
+            RecommendRequest.getRelatedList(context, aid, new OnGetNewRecommendListener() {
                 @Override
                 public void onSuccess(List<String> list) {
                     adapter = new NewsAdapter(context, list);
