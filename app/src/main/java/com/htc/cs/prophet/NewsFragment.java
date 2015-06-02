@@ -51,7 +51,7 @@ public class NewsFragment extends Fragment {
 
         if (type.equals(TYPE_CF)) {
 
-            RecommendRequest.getNewsRecommendations(context, Utils.getDeviceSN(context), new OnGetNewRecommendListener() {
+            RecommendRequest.getNewsRecommendations(context, Utils.getDeviceSN(context), 0, new OnGetNewRecommendListener() {
                 @Override
                 public void onSuccess(List<String> list) {
                     adapter = new NewsAdapter(context, list);
@@ -80,7 +80,7 @@ public class NewsFragment extends Fragment {
 
         } else {
 
-            RecommendRequest.getNewsRecommendations(context, Utils.getDeviceSN(context), new OnGetNewRecommendListener() {
+            RecommendRequest.getNewsRecommendations(context, Utils.getDeviceSN(context), 1, new OnGetNewRecommendListener() {
                 @Override
                 public void onSuccess(List<String> list) {
                     adapter = new NewsAdapter(context, list);

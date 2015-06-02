@@ -26,6 +26,7 @@ public class RecommendRequest {
 
     private static final String HOST = "http://bi-proto-prism-1990381229.us-west-2.elb.amazonaws.com/";
     private static final String RECOMMEND_API = "recommend/";
+    private static final String RECOMMEND_IF_API = "recommend_w_if/";
     private static final String HISTORY_API = "history/";
     private static final String USER_API = "users/";
 
@@ -77,9 +78,14 @@ public class RecommendRequest {
         RequestQueueInstance.getInstance(context).addToRequestQueue(request);
     }
 
-    public static void getNewsRecommendations(Context context, String deviceSN, final OnGetNewRecommendListener l) {
+    public static void getNewsRecommendations(Context context, String deviceSN, int recType, final OnGetNewRecommendListener l) {
 
-        String url = HOST + RECOMMEND_API + deviceSN;
+        String url = HOST;
+        if (recType == 0) {
+            url += RECOMMEND_API + deviceSN;
+        } else {
+            url += RECOMMEND_IF_API + deviceSN;
+        }
         Log.d(TAG, url);
 
 
