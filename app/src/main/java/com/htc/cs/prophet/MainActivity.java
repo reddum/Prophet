@@ -36,7 +36,7 @@ public class MainActivity extends ActionBarActivity {
 
         updateTitle();
         mViewPager = (ViewPager) findViewById(R.id.pager);
-        //mViewPager.setOffscreenPageLimit(3);
+        mViewPager.setOffscreenPageLimit(3);
         mViewPager.setAdapter(new RecommendationPagerAdapter(getSupportFragmentManager()));
     }
 
