@@ -108,30 +108,26 @@ public class RecommendRequest {
                             Collections.sort(recommendsList, new Comparator<JSONObject>() {
                                 @Override
                                 public int compare(JSONObject a, JSONObject b) {
-                                    String valA = new String();
-                                    String valB = new String();
+                                    double valA, valB;
 
                                     try {
-                                        valA = (String) a.get("score");
-                                        valB = (String) b.get("score");
+                                        valA = a.getDouble("score");
+                                        valB = b.getDouble("score");
                                     }
                                     catch (JSONException e) {
-                                        Log.e(TAG, "JSONException in combineJSONArrays sort section", e);
+                                        return 0;
                                     }
 
-                                    int comp = valA.compareTo(valB);
-
-                                    if(comp > 0)
+                                    if( valA >= valB)
                                         return -1;
-                                    if(comp < 0)
+                                    else
                                         return 1;
-                                    return 0;
                                 }
                             });
 
-
                             List<String> list = new ArrayList<String>();
                             for (int i=0; i < recommendsList.size(); i++) {
+                                Log.d(TAG, "score::" + recommendsList.get(i).getDouble("score"));
                                 list.add(recommendsList.get(i).getString("aid"));
                             }
                             l.onSuccess(list);
@@ -189,9 +185,9 @@ public class RecommendRequest {
 
                                     int comp = valA.compareTo(valB);
 
-                                    if(comp > 0)
-                                        return 1;
                                     if(comp < 0)
+                                        return 1;
+                                    if(comp > 0)
                                         return -1;
                                     return 0;
                                 }
