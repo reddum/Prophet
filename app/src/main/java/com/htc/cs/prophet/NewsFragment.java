@@ -31,6 +31,7 @@ public class NewsFragment extends Fragment {
     public static final String TYPE_HISTORY = "history";
     public static final String TYPE_CF = "cf";
     public static final String TYPE_IFCF = "ifcf";
+    public static final String TYPE_HOT_NEWS = "hot_news";
     public static final String TYPE_RELATED = "related";
 
     private ListView mNewsListView;
@@ -44,7 +45,7 @@ public class NewsFragment extends Fragment {
     }
 
     @Override
-    public void onAttach(Activity activity) {
+    public void onAttach(final Activity activity) {
         super.onAttach(activity);
 
         final Context context = activity;
@@ -63,6 +64,7 @@ public class NewsFragment extends Fragment {
                 @Override
                 public void onError() {
                     Log.e(TAG, "getNewsRecommendations error");
+                    ((MainActivity) activity).showHotNews();
                 }
             });
         } else if (type.equals(TYPE_HISTORY)) {
@@ -107,6 +109,19 @@ public class NewsFragment extends Fragment {
                 @Override
                 public void onError() {
                     Log.e(TAG, "getNewsRecommendations error");
+                }
+            });
+        } else if (type.equals(TYPE_HOT_NEWS)) {
+            RecommendRequest.geHotNewsList(context,  new OnGetNewRecommendListener() {
+                @Override
+                public void onSuccess(List<String> list) {
+                    adapter = new NewsAdapter(context, list);
+                    mNewsListView.setAdapter(adapter);
+                }
+
+                @Override
+                public void onError() {
+
                 }
             });
         }

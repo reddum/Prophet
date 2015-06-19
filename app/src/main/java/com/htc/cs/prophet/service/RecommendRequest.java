@@ -15,6 +15,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
 
 /**
@@ -28,8 +29,9 @@ public class RecommendRequest {
     private static final String RECOMMEND_API = "recommend/";
     private static final String RECOMMEND_IF_API = "recommend_w_if/";
     private static final String HISTORY_API = "history/";
-    private static final String USER_API = "users/";
+    private static final String USER_API = "users";
     private static final String RELATED_API = "itemsim/";
+    private static final String HOT_NEWS_API = "popular ";
 
 
     public interface OnGetNewRecommendListener {
@@ -79,7 +81,7 @@ public class RecommendRequest {
         RequestQueueInstance.getInstance(context).addToRequestQueue(request);
     }
 
-    public static void getNewsRecommendations(Context context, String deviceSN, int recType, final OnGetNewRecommendListener l) {
+    public static void getNewsRecommendations(final Context context, String deviceSN, int recType, final OnGetNewRecommendListener l) {
 
         String url = HOST;
         if (recType == 0) {
@@ -97,6 +99,11 @@ public class RecommendRequest {
                     public void onResponse(JSONObject response) {
 
                         Log.d(TAG, response.toString());
+
+                        if (response.has("err_msg")) {
+                            l.onError();
+                            return;
+                        }
 
                         try {
                             JSONArray recommends = response.getJSONArray("recommends");
@@ -126,9 +133,16 @@ public class RecommendRequest {
                             });
 
                             List<String> list = new ArrayList<String>();
+                            HashSet<String> set = new HashSet<String>();
                             for (int i=0; i < recommendsList.size(); i++) {
-                                Log.d(TAG, "score::" + recommendsList.get(i).getDouble("score"));
-                                list.add(recommendsList.get(i).getString("aid"));
+                                String aid = recommendsList.get(i).getString("aid");
+                                if (!set.contains(aid)) {
+                                    Log.d(TAG, "score::" + recommendsList.get(i).getDouble("score"));
+                                    list.add(aid);
+                                    set.add(aid);
+                                } else {
+                                    Log.d(TAG, "duplicate::" + aid);
+                                }
                             }
                             l.onSuccess(list);
 
@@ -172,30 +186,33 @@ public class RecommendRequest {
                             Collections.sort(historyList, new Comparator<JSONObject>() {
                                 @Override
                                 public int compare(JSONObject a, JSONObject b) {
-                                    String valA = new String();
-                                    String valB = new String();
+                                    long valA = 0;
+                                    long valB = 0;
 
                                     try {
-                                        valA = (String) a.get("timestamp");
-                                        valB = (String) b.get("timestamp");
+                                        valA = a.getLong("timestamp");
+                                        valB = b.getLong("timestamp");
                                     }
                                     catch (JSONException e) {
                                         Log.e(TAG, "JSONException in combineJSONArrays sort section", e);
                                     }
 
-                                    int comp = valA.compareTo(valB);
-
-                                    if(comp < 0)
+                                    if(valA < valB)
                                         return 1;
-                                    if(comp > 0)
+                                    if(valA > valB)
                                         return -1;
                                     return 0;
                                 }
                             });
 
                             List<String> list = new ArrayList<String>();
+                            HashSet<String> set = new HashSet<String>();
                             for (int i=0; i < historyList.size(); i++) {
-                                list.add(historyList.get(i).getString("aid"));
+                                String aid = historyList.get(i).getString("aid");
+                                if (!set.contains(aid)) {
+                                    list.add(aid);
+                                    set.add(aid);
+                                }
                             }
                             l.onSuccess(list);
                         } catch (JSONException e) {
@@ -206,6 +223,7 @@ public class RecommendRequest {
 
                     @Override
                     public void onErrorResponse(VolleyError error) {
+
                         Log.e(TAG, error.getMessage(), error);
                         l.onError();
                     }
@@ -281,5 +299,74 @@ public class RecommendRequest {
         RequestQueueInstance.getInstance(context).addToRequestQueue(request);
     }
 
+
+    public static void geHotNewsList(Context context, final OnGetNewRecommendListener l) {
+
+        String url = HOST + HOT_NEWS_API;
+        Log.d(TAG, url);
+
+        JsonObjectRequest request = new JsonObjectRequest
+                (Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+
+                    @Override
+                    public void onResponse(JSONObject response) {
+
+                        Log.d(TAG, response.toString());
+
+                        try {
+                            JSONArray history = response.getJSONArray("data");
+
+                            List<JSONObject> historyList = new ArrayList<JSONObject>();
+                            for (int i = 0; i < history.length(); i++)
+                                historyList.add(history.getJSONObject(i));
+
+                            Collections.sort(historyList, new Comparator<JSONObject>() {
+                                @Override
+                                public int compare(JSONObject a, JSONObject b) {
+                                    long valA = 0;
+                                    long valB = 0;
+
+                                    try {
+                                        valA = a.getLong("count");
+                                        valB = b.getLong("count");
+                                    }
+                                    catch (JSONException e) {
+                                        Log.e(TAG, "JSONException in combineJSONArrays sort section", e);
+                                    }
+
+                                    if(valA < valB)
+                                        return 1;
+                                    if(valA > valB)
+                                        return -1;
+                                    return 0;
+                                }
+                            });
+
+                            List<String> list = new ArrayList<String>();
+                            HashSet<String> set = new HashSet<String>();
+                            for (int i=0; i < historyList.size(); i++) {
+                                String aid = historyList.get(i).getString("aid");
+                                if (!set.contains(aid)) {
+                                    list.add(aid);
+                                    set.add(aid);
+                                }
+                            }
+                            l.onSuccess(list);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }, new Response.ErrorListener() {
+
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.e(TAG, error.getMessage(), error);
+                        l.onError();
+                    }
+                });
+
+        request.setShouldCache(false);
+        RequestQueueInstance.getInstance(context).addToRequestQueue(request);
+    }
 
 }

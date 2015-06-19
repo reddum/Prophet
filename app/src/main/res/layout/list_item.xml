@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="horizontal" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="20dp">
 
     <LinearLayout
         android:orientation="vertical"
-        android:layout_width="100dp"
-        android:layout_height="75dp">
+        android:layout_width="match_parent"
+        android:layout_height="200dp">
         <com.android.volley.toolbox.NetworkImageView
             android:id="@+id/coverImage"
             android:layout_width="match_parent"
@@ -16,24 +17,34 @@
     </LinearLayout>
 
 
-    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:orientation="vertical" android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_margin="8dp">
+    <RelativeLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/gradient_layout">
         <TextView
             android:id="@+id/title"
             android:layout_alignParentTop="true"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="14sp"
-            android:maxLines="2"
-            android:ellipsize="end" />
+            android:singleLine="true"
+            android:textColor="@android:color/white"
+            android:ellipsize="end"
+            android:layout_marginTop="5dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"/>
+
         <TextView
             android:id="@+id/subtitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
+            android:layout_below="@id/title"
+            android:textColor="#aaaaaa"
             android:textSize="12sp"
-            android:textColor="#ff868686"/>
+            android:layout_marginLeft="5dp"
+            android:layout_marginBottom="5dp"
+            android:layout_marginRight="5dp"/>
     </RelativeLayout>
-</LinearLayout>
+</RelativeLayout>

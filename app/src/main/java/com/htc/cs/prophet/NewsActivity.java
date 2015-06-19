@@ -34,12 +34,10 @@ public class NewsActivity extends ActionBarActivity {
     }
 
     private void restoreActionBar() {
-
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayShowTitleEnabled(true);
         actionBar.setTitle(mTitle);
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

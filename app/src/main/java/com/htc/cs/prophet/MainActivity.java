@@ -28,6 +28,7 @@ public class MainActivity extends ActionBarActivity {
      */
     private CharSequence mTitle;
     private ViewPager mViewPager;
+    private RecommendationPagerAdapter mPagerAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,7 +38,8 @@ public class MainActivity extends ActionBarActivity {
         updateTitle();
         mViewPager = (ViewPager) findViewById(R.id.pager);
         mViewPager.setOffscreenPageLimit(3);
-        mViewPager.setAdapter(new RecommendationPagerAdapter(getSupportFragmentManager()));
+        mPagerAdapter = new RecommendationPagerAdapter(getSupportFragmentManager());
+        mViewPager.setAdapter(mPagerAdapter);
     }
 
     private void updateTitle() {
@@ -83,16 +85,29 @@ public class MainActivity extends ActionBarActivity {
                 } else{
                     Utils.setDeviceSN(this, sn);
                 }
-                mViewPager.setAdapter(new RecommendationPagerAdapter(getSupportFragmentManager()));
+                mPagerAdapter = new RecommendationPagerAdapter(getSupportFragmentManager());
+                mViewPager.setAdapter(mPagerAdapter);
                 updateTitle();
             }
         }
     }
 
+    public void showHotNews() {
+
+        mPagerAdapter.showHotNews();
+        mPagerAdapter.notifyDataSetChanged();
+
+    }
+
     public class RecommendationPagerAdapter extends FragmentStatePagerAdapter {
+
+        private String[] titles = null;
+        private boolean isHotNews = false;
 
         public RecommendationPagerAdapter(FragmentManager fm) {
             super(fm);
+            Resources res = getResources();
+            titles = res.getStringArray(R.array.tab_titles);
         }
 
         @Override
@@ -104,9 +119,9 @@ public class MainActivity extends ActionBarActivity {
             if (position == 0) {
                 args.putString(NewsFragment.NEWS_TYPE, NewsFragment.TYPE_HISTORY);
             } else if (position == 1) {
-                args.putString(NewsFragment.NEWS_TYPE, NewsFragment.TYPE_CF);
-            } else {
-                args.putString(NewsFragment.NEWS_TYPE, NewsFragment.TYPE_IFCF);
+                args.putString(NewsFragment.NEWS_TYPE, isHotNews? NewsFragment.TYPE_HOT_NEWS :NewsFragment.TYPE_CF );
+//            } else {
+//                args.putString(NewsFragment.NEWS_TYPE, NewsFragment.TYPE_IFCF);
             }
 
             fragment.setArguments(args);
@@ -115,20 +130,24 @@ public class MainActivity extends ActionBarActivity {
 
         @Override
         public int getCount() {
-            return 3;
+            return 2;
         }
 
         @Override
         public CharSequence getPageTitle(int position) {
 
-            Resources res = getResources();
-            String[] titles = res.getStringArray(R.array.tab_titles);
             return titles[position];
         }
 
         @Override
         public int getItemPosition(Object object) {
             return POSITION_NONE;
+        }
+
+        public void showHotNews() {
+            Log.d(TAG, "showHotNews");
+            titles[1] = "Hot News";
+            isHotNews = true;
         }
     }
 }

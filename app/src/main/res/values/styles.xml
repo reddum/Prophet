@@ -10,5 +10,4 @@
         <item name="android:textStyle">bold</item>
         <item name="android:textColor">#ffffffff</item>
     </style>
-
 </resources>
