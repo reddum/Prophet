@@ -6,11 +6,13 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.Toolbar;
+import android.support.design.widget.TabLayout;
+
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -29,6 +31,8 @@ public class MainActivity extends ActionBarActivity {
     private CharSequence mTitle;
     private ViewPager mViewPager;
     private RecommendationPagerAdapter mPagerAdapter;
+    private Toolbar mToolbar;
+    private TabLayout mTabLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,10 +40,21 @@ public class MainActivity extends ActionBarActivity {
         setContentView(R.layout.activity_main);
 
         updateTitle();
+       // mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        mTabLayout = (TabLayout) findViewById(R.id.tab_layout);
         mViewPager = (ViewPager) findViewById(R.id.pager);
         mViewPager.setOffscreenPageLimit(3);
         mPagerAdapter = new RecommendationPagerAdapter(getSupportFragmentManager());
         mViewPager.setAdapter(mPagerAdapter);
+
+
+//        if (mToolbar != null) {
+//            setSupportActionBar(mToolbar);
+//        }
+
+        mTabLayout.setupWithViewPager(mViewPager);
+
+
     }
 
     private void updateTitle() {

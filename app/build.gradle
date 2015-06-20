@@ -24,4 +24,5 @@ dependencies {
     compile 'com.android.support:appcompat-v7:22.1.1'
     compile files('/Users/Ct_Huang/Projects/htc/Prophet/libs/disklrucache-2.0.2.jar')
     compile files('/Users/Ct_Huang/Projects/htc/Prophet/libs/volley.jar')
+    compile 'com.android.support:design:22.2.0'
 }
