@@ -26,7 +26,7 @@ public class SimpleImageCache implements ImageLoader.ImageCache {
     private final String TAG = "[Prophet][" + SimpleImageCache.class.getSimpleName() + "]";
 
     private final LruCache<String, Bitmap> cache = new LruCache<String, Bitmap>(20);
-    private final static int DISK_CACHE_SIZE = 10 * 1024 * 1024;
+    private final static int DISK_CACHE_SIZE = 100 * 1024 * 1024;
     private final static int DISK_CACHE_INDEX = 0;
 
     private final Object mDiskCacheLock = new Object();
