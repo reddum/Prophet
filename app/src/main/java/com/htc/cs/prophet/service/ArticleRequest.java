@@ -26,11 +26,9 @@ public class ArticleRequest {
 
     private static LruCache<String, JSONObject> requestCache = new LruCache<String, JSONObject>(5 * 1024 * 1024);
 
-
-
     public interface OnGetArticleMeta {
-        public void onSuccess(NewsMeta meta) ;
-        public void onError();
+        void onSuccess(NewsMeta meta) ;
+        void onError();
     }
 
     public static void getArticle(Context context, String aid, final OnGetArticleMeta l) {

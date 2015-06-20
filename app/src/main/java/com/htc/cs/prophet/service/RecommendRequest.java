@@ -7,6 +7,7 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.htc.cs.prophet.utils.Utils;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -32,6 +33,7 @@ public class RecommendRequest {
     private static final String USER_API = "users";
     private static final String RELATED_API = "itemsim/";
     private static final String HOT_NEWS_API = "popular ";
+    private static final String FEEDBACK_API = "feedback ";
 
 
     public interface OnGetNewRecommendListener {
@@ -234,6 +236,7 @@ public class RecommendRequest {
     }
 
     public static void getRelatedList(Context context, String aid, final OnGetNewRecommendListener l) {
+
         String url = HOST + RELATED_API + aid;
         Log.d(TAG, url);
 
@@ -298,7 +301,6 @@ public class RecommendRequest {
         request.setShouldCache(false);
         RequestQueueInstance.getInstance(context).addToRequestQueue(request);
     }
-
 
     public static void geHotNewsList(Context context, final OnGetNewRecommendListener l) {
 
@@ -369,4 +371,35 @@ public class RecommendRequest {
         RequestQueueInstance.getInstance(context).addToRequestQueue(request);
     }
 
+    public static void sendClickFeedback(Context context, String aid) {
+
+        String url = HOST + FEEDBACK_API;
+        Log.d(TAG, url);
+
+        JSONObject body = new JSONObject();
+
+        try {
+            body.put("sn", Utils.getDeviceSN(context));
+            body.put("aid", aid);
+        } catch (Exception e) {}
+
+        JsonObjectRequest request = new JsonObjectRequest
+                (Request.Method.POST, url, null, new Response.Listener<JSONObject>() {
+
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Log.d(TAG, response.toString());
+
+                    }
+                }, new Response.ErrorListener() {
+
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+
+                    }
+                });
+
+        request.setShouldCache(false);
+        RequestQueueInstance.getInstance(context).addToRequestQueue(request);
+    }
 }
