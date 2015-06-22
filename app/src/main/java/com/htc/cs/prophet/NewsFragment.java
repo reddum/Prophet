@@ -3,6 +3,8 @@ package com.htc.cs.prophet;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -34,14 +36,14 @@ public class NewsFragment extends Fragment {
     public static final String TYPE_HOT_NEWS = "hot_news";
     public static final String TYPE_RELATED = "related";
 
-    private ListView mNewsListView;
+    private RecyclerView mNewsListView;
     private NewsAdapter adapter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-        mNewsListView = (ListView) rootView.findViewById(R.id.news_list);
-        return rootView;
+        mNewsListView = (RecyclerView) inflater.inflate(R.layout.fragment_main, container, false);
+        mNewsListView.setLayoutManager(new LinearLayoutManager(mNewsListView.getContext()));
+        return mNewsListView;
     }
 
     @Override

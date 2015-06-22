@@ -4,11 +4,14 @@ import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.android.volley.toolbox.ImageLoader;
@@ -25,48 +28,62 @@ import java.util.List;
 /**
  * Created by Ct_Huang on 5/20/15.
  */
-public class NewsAdapter extends BaseAdapter {
+public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
+
+    public static class ViewHolder extends RecyclerView.ViewHolder {
+        public String mBoundString;
+
+        public final View mView;
+        public final NetworkImageView mImageView;
+        public final TextView mTitleView;
+        public final TextView mSubTitleView;
+
+        public ViewHolder(View view) {
+            super(view);
+            mView = view;
+            mImageView = ((NetworkImageView) mView.findViewById(R.id.coverImage));
+            mTitleView = ((TextView) mView.findViewById(R.id.title));
+            mSubTitleView = ((TextView) mView.findViewById(R.id.subtitle));
+        }
+
+        @Override
+        public String toString() {
+            return super.toString() + " '" + mTitleView.getText();
+        }
+    }
 
     private static final String TAG = "[Prophet][" + NewsAdapter.class.getSimpleName() + "]";
 
 
     private Context context;
     private List<String> idList;
+    private int mBackground;
+    private final TypedValue mTypedValue = new TypedValue();
 
     public NewsAdapter(Context context, List<String> ids) {
         this.context = context;
         this.idList = ids;
+
+        context.getTheme().resolveAttribute(R.attr.selectableItemBackground, mTypedValue, true);
+        mBackground = mTypedValue.resourceId;
     }
 
     @Override
-    public int getCount() {
-        return idList.size();
+    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item, parent, false);
+        view.setBackgroundResource(mBackground);
+        return new ViewHolder(view);
     }
 
     @Override
-    public Object getItem(int position) {
-        return null;
-    }
-
-    @Override
-    public long getItemId(int position) {
-        return position;
-    }
-
-    @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public void onBindViewHolder(final ViewHolder holder, int position) {
 
         final String aid = idList.get(position);
+        holder.mView.setTag(aid);
 
-        if (convertView == null) {
-            convertView = LayoutInflater.from(context).inflate(R.layout.list_item, null);
-        }
-
-        final View view = convertView;
-        view.setTag(aid);
-        ((NetworkImageView) view.findViewById(R.id.coverImage)).setImageBitmap(null);
-        ((TextView) view.findViewById(R.id.title)).setText("");
-        ((TextView) view.findViewById(R.id.subtitle)).setText("");
+        holder.mTitleView.setText("");
+        holder.mImageView.setImageBitmap(null);
+        holder.mSubTitleView.setText("");
 
         ArticleRequest.getArticle(context, aid, new ArticleRequest.OnGetArticleMeta() {
             @Override
@@ -76,20 +93,19 @@ public class NewsAdapter extends BaseAdapter {
                     return;
                 }
 
-                if (!meta.getId().equals(view.getTag())) {
+                if (!meta.getId().equals(holder.mView.getTag())) {
                     return;
                 }
 
-                ImageLoader loader = RequestQueueInstance.getInstance(context).getImageLoader();
-                ((TextView) view.findViewById(R.id.title)).setText(meta.getTitle());
-
-                ((NetworkImageView) view.findViewById(R.id.coverImage)).setImageUrl(meta.getCover(), loader);
-
                 SimpleDateFormat formatter = new SimpleDateFormat("yyyy/MM/dd");
                 String dateString = formatter.format(new Date(meta.getTimestamp()));
-                ((TextView) view.findViewById(R.id.subtitle)).setText(dateString + ", " + meta.getProvider());
 
-                view.setOnClickListener(new View.OnClickListener() {
+                ImageLoader loader = RequestQueueInstance.getInstance(context).getImageLoader();
+                holder.mTitleView.setText(meta.getTitle());
+                holder.mImageView.setImageUrl(meta.getCover(), loader);
+                holder.mSubTitleView.setText(dateString + ", " + meta.getProvider());
+
+                holder.mView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         try {
@@ -111,9 +127,11 @@ public class NewsAdapter extends BaseAdapter {
             }
         });
 
+    }
 
-
-        return convertView;
+    @Override
+    public int getItemCount() {
+        return idList.size();
     }
 
 }
