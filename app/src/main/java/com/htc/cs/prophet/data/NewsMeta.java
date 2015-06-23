@@ -11,6 +11,8 @@ public class NewsMeta {
     private String title;
     private String cover;
     private String url;
+    private String tid;
+    private String eid;
     private String provider;
     private long timestamp;
 
@@ -21,6 +23,7 @@ public class NewsMeta {
         this.url = url;
         this.provider = !TextUtils.isEmpty(provider) ? provider : "";
         this.timestamp = timestamp;
+
     }
 
     public String getId() {
@@ -42,4 +45,13 @@ public class NewsMeta {
     public String getProvider() { return provider; }
 
     public long getTimestamp() { return timestamp; }
+
+    public void setTid(String tid) { this.tid = tid; }
+
+    public String getTid() { return tid; }
+
+    public void getEid(String eid) { this.eid = eid; }
+
+    public String getEid() { return eid; }
+
 }

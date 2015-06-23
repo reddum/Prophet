@@ -3,20 +3,20 @@ package com.htc.cs.prophet.data;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.NetworkImageView;
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
 import com.htc.cs.prophet.NewsActivity;
+import com.htc.cs.prophet.Prophet;
 import com.htc.cs.prophet.R;
 import com.htc.cs.prophet.service.ArticleRequest;
 import com.htc.cs.prophet.service.RequestQueueInstance;
@@ -31,12 +31,12 @@ import java.util.List;
 public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        public String mBoundString;
 
         public final View mView;
         public final NetworkImageView mImageView;
         public final TextView mTitleView;
         public final TextView mSubTitleView;
+
 
         public ViewHolder(View view) {
             super(view);
@@ -55,17 +55,23 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
     private static final String TAG = "[Prophet][" + NewsAdapter.class.getSimpleName() + "]";
 
 
+    public static final int TYPE_HISTORY = 0;
+    public static final int TYPE_RECOMMEND = 1;
+
     private Context context;
     private List<String> idList;
     private int mBackground;
+    public  int mType;
     private final TypedValue mTypedValue = new TypedValue();
 
-    public NewsAdapter(Context context, List<String> ids) {
+
+    public NewsAdapter(Context context, List<String> ids, int type) {
         this.context = context;
         this.idList = ids;
 
         context.getTheme().resolveAttribute(R.attr.selectableItemBackground, mTypedValue, true);
         mBackground = mTypedValue.resourceId;
+        mType = type;
     }
 
     @Override
@@ -109,6 +115,20 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
                     @Override
                     public void onClick(View v) {
                         try {
+
+                            if (mType == TYPE_RECOMMEND) {
+                                Log.d("GAv4", "event sending");
+                                // Build and send an Event.
+                                Tracker t = Prophet.getTracker();
+                                t.setScreenName("News");
+                                t.send(new HitBuilders.EventBuilder()
+                                        .setCategory("Recommend News")
+                                        .setAction("Click")
+                                        .setLabel(aid)
+                                        .setValue(1)
+                                        .build());
+
+                            }
                             Intent myIntent = new Intent(context, NewsActivity.class);
                             myIntent.putExtra("url", meta.getUrl());
                             myIntent.putExtra("title", meta.getTitle());

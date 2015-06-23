@@ -10,6 +10,9 @@ import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
+
 
 public class NewsActivity extends ActionBarActivity {
 
@@ -24,6 +27,7 @@ public class NewsActivity extends ActionBarActivity {
         mWebView = (WebView) findViewById(R.id.activity_main_webview);
 
         String url = getIntent().getStringExtra("url");
+        String aid = getIntent().getStringExtra("aid");
         mTitle = getIntent().getStringExtra("title");
         mWebView.setWebChromeClient(new WebChromeClient());
         mWebView.setWebViewClient(new WebViewClient());
@@ -31,6 +35,8 @@ public class NewsActivity extends ActionBarActivity {
         mWebView.loadUrl(url);
 
         restoreActionBar();
+
+
     }
 
     private void restoreActionBar() {

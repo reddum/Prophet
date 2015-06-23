@@ -33,7 +33,7 @@ public class RecommendRequest {
     private static final String USER_API = "users";
     private static final String RELATED_API = "itemsim/";
     private static final String HOT_NEWS_API = "popular ";
-    private static final String FEEDBACK_API = "feedback ";
+    private static final String FEEDBACK_API = "u ";
 
 
     public interface OnGetNewRecommendListener {
@@ -371,7 +371,7 @@ public class RecommendRequest {
         RequestQueueInstance.getInstance(context).addToRequestQueue(request);
     }
 
-    public static void sendClickFeedback(Context context, String aid) {
+    public static void sendClickFeedback(Context context, String aid, String tid, String eid) {
 
         String url = HOST + FEEDBACK_API;
         Log.d(TAG, url);
@@ -381,6 +381,8 @@ public class RecommendRequest {
         try {
             body.put("sn", Utils.getDeviceSN(context));
             body.put("aid", aid);
+            body.put("tid", tid);
+            body.put("eid", eid);
         } catch (Exception e) {}
 
         JsonObjectRequest request = new JsonObjectRequest

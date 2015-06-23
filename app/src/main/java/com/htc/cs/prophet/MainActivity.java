@@ -134,9 +134,9 @@ public class MainActivity extends AppCompatActivity {
             Fragment fragment = new NewsFragment();
             Bundle args = new Bundle();
 
-            if (position == 0) {
+            if (position == 1) {
                 args.putString(NewsFragment.NEWS_TYPE, NewsFragment.TYPE_HISTORY);
-            } else if (position == 1) {
+            } else if (position == 0) {
                 args.putString(NewsFragment.NEWS_TYPE, isHotNews? NewsFragment.TYPE_HOT_NEWS :NewsFragment.TYPE_CF );
 //            } else {
 //                args.putString(NewsFragment.NEWS_TYPE, NewsFragment.TYPE_IFCF);

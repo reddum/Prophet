@@ -59,7 +59,7 @@ public class NewsFragment extends Fragment {
             RecommendRequest.getNewsRecommendations(context, Utils.getDeviceSN(context), 0, new OnGetNewRecommendListener() {
                 @Override
                 public void onSuccess(List<String> list) {
-                    adapter = new NewsAdapter(context, list);
+                    adapter = new NewsAdapter(context, list, NewsAdapter.TYPE_RECOMMEND);
                     mNewsListView.setAdapter(adapter);
                 }
 
@@ -74,7 +74,7 @@ public class NewsFragment extends Fragment {
             RecommendRequest.getReadingHistory(context, Utils.getDeviceSN(context), new OnGetNewRecommendListener() {
                 @Override
                 public void onSuccess(List<String> list) {
-                    adapter = new NewsAdapter(context, list);
+                    adapter = new NewsAdapter(context, list, NewsAdapter.TYPE_HISTORY);
                     mNewsListView.setAdapter(adapter);
                 }
 
@@ -89,7 +89,7 @@ public class NewsFragment extends Fragment {
             RecommendRequest.getNewsRecommendations(context, Utils.getDeviceSN(context), 1, new OnGetNewRecommendListener() {
                 @Override
                 public void onSuccess(List<String> list) {
-                    adapter = new NewsAdapter(context, list);
+                    adapter = new NewsAdapter(context, list, NewsAdapter.TYPE_RECOMMEND);
                     mNewsListView.setAdapter(adapter);
                 }
 
@@ -104,7 +104,7 @@ public class NewsFragment extends Fragment {
             RecommendRequest.getRelatedList(context, aid, new OnGetNewRecommendListener() {
                 @Override
                 public void onSuccess(List<String> list) {
-                    adapter = new NewsAdapter(context, list);
+                    adapter = new NewsAdapter(context, list, NewsAdapter.TYPE_RECOMMEND);
                     mNewsListView.setAdapter(adapter);
                 }
 
@@ -117,7 +117,7 @@ public class NewsFragment extends Fragment {
             RecommendRequest.geHotNewsList(context,  new OnGetNewRecommendListener() {
                 @Override
                 public void onSuccess(List<String> list) {
-                    adapter = new NewsAdapter(context, list);
+                    adapter = new NewsAdapter(context, list, NewsAdapter.TYPE_RECOMMEND);
                     mNewsListView.setAdapter(adapter);
                 }
 

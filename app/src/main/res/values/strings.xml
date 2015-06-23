@@ -14,8 +14,8 @@
     <string name="action_related">Also read</string>
 
     <string-array name="tab_titles">
-        <item>History</item>
         <item>Recommendations</item>
+        <item>History</item>
         <item>IF+CF</item>
     </string-array>
     <string name="title_activity_list_devices">Devices</string>
